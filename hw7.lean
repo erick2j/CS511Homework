@@ -32,8 +32,26 @@ example : ¬ (∃ n : ℕ, n ^ 2 = 2) := by
 
 -- MoP Section 5.3.6 Exercise 2
 example (P Q : Prop) : ¬ (P → Q) ↔ (P ∧ ¬ Q) := by
-  --constructor
-  --. intro hnotPQ
+  . constructor
+    intro h_not_p_implies_q
+    by_cases hP : P
+    . constructor
+      . exact hP
+      . intro hQ
+        apply h_not_p_implies_q
+        extra
+    . constructor
+      . apply False.elim
+        apply h_not_p_implies_q
+        intro hPP
+        contradiction
+      . apply False.elim
+        apply h_not_p_implies_q
+        intro hPP
+        contradiction
+    . intro h_P_and_not_Q 
+      obtain ⟨hP, hQ⟩ := h_P_and_not_Q
+      extra
 
 --- Problem 5
 example {p : ℕ} (k : ℕ) (hk1 : k ≠ 1) (hkp : k ≠ p) (hk : k ∣ p) : ¬ Prime p := by
@@ -52,45 +70,9 @@ example {p : ℕ} (k : ℕ) (hk1 : k ≠ 1) (hkp : k ≠ p) (hk : k ∣ p) : ¬ 
 example {p : ℕ} (hp : ¬ Prime p) (hp2 : 2 ≤ p) : ∃ m, 2 ≤ m ∧ m < p ∧ m ∣ p := by
   have H : ¬ (∀ (m : ℕ), 2 ≤ m → m < p → ¬m ∣ p)
   · intro H
-    
-    
-
-    
-
-   -- apply prime_test
-
-
-
-
-    
-    
-    
-
-
-
-  
-    
-    
-
-
-
-
-    
-
-
-
-    
-    
-
-
-
-
-
-
-    
-  
-    
-      
-
-
-
+    apply hp
+    apply prime_test
+    . exact hp2
+    . exact H
+  . push_neg at H
+    exact H
